@@ -85,7 +85,10 @@ export async function sendFriendRequest(req, res) {
 // ----------------- ACCEPT FRIEND REQUEST -----------------
 export async function acceptFriendRequest(req, res) {
   try {
-    const { id: requestId } = req.params;
+    const { requestId } = req.body;
+    if (!requestId) {
+      return res.status(400).json({ message: "Request ID is required" });
+    }
 
     const friendRequest = await FriendRequest.findById(requestId);
     if (!friendRequest) return res.status(404).json({ message: "Friend request not found" });
