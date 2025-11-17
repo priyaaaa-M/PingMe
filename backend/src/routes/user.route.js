@@ -24,7 +24,7 @@ router.get("/friends", getFriends);
 
 router.post("/friend-request/:id",sendFriendRequest);
 
-router.put("/friend-requests/:id/accept",  acceptFriendRequest);
+router.put("/friend-requests/accept", acceptFriendRequest);
 
 router.get("/friend-requests",  getFriendRequests);
 
