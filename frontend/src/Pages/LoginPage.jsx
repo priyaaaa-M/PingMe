@@ -383,7 +383,7 @@ const LoginPage = () => {
               <ShipWheelIcon className="w-6 h-6 text-white" />
             </div>
             <span className="text-3xl font-bold bg-gradient-to-r from-emerald-200 to-green-100 bg-clip-text text-transparent tracking-wider">
-              Streamify
+              PingMe
             </span>
           </div>
 

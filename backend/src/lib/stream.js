@@ -4,8 +4,8 @@ import "dotenv/config";
 
 
 
-const apiKey = process.env.STEAM_API_KEY
-const apiSecret = process.env.STEAM_API_SECRET
+const apiKey = process.env.STREAM_API_KEY
+const apiSecret = process.env.STREAM_API_SECRET
 
 
 if(! apiKey || !apiSecret){
@@ -35,7 +35,7 @@ export const generateStreamToken = (userId)=>{
 
            }catch(error){
               console.log("Error Generating Stream token:",error);
-              resizeBy.status(500).json({message:"Internal Server Error"})
+              throw new Error("Failed to generate Stream token")
            }
 };
 

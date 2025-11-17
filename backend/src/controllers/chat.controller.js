@@ -2,15 +2,15 @@ import { generateStreamToken } from "../lib/stream.js";
 
 export async function getStreamToken(req, res) {
   try {
-    // ✅ Ensure user exists in request (protect middleware must set req.user)
-    if (!req.user || !req.user.id) {
+    // FIX: Use _id instead of id
+    if (!req.user || !req.user._id) {
       return res.status(401).json({ message: "Unauthorized: No user found" });
     }
 
-    // ✅ Generate the token using user ID
-    const token = generateStreamToken(req.user.id);
+    const userId = req.user._id.toString();
 
-    // ✅ Respond with token
+    const token = generateStreamToken(userId);
+
     res.status(200).json({ token });
   } catch (error) {
     console.error("❌ Error in getStreamToken controller:", error.message);

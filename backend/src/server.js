@@ -1,52 +1,61 @@
 import express from "express";
-import dotenv from "dotenv";
+import "dotenv/config";
 import cookieParser from "cookie-parser";
+import cors from "cors";
+import path from "path";
+
+import authRoutes from "./routes/auth.route.js";
+import userRoutes from "./routes/user.route.js";
+import chatRoutes from "./routes/chat.route.js";
+
 import { connectToDB } from "./lib/db.js";
 
-import authRoute from "./routes/auth.route.js";
-import userRoute from "./routes/user.route.js";
-import chatRoute from "./routes/chat.route.js";
-
-
-import cors from "cors";
-dotenv.config();
-
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 
-//cors
-app.use(cors({
-    origin: 'http://localhost:5173', // Your frontend URL
-    credentials: true // If you're using cookies/sessions
-}));
-// ✅ Middleware to parse JSON requests
+const __dirname = path.resolve();
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true
+  })
+);
+
+
 app.use(express.json());
-
-// ✅ Middleware to parse cookies
 app.use(cookieParser());
 
+app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/chat", chatRoutes);
 
-connectToDB(); // ✅ Connect to MongoDB
+// In server.js, replace the production block with:
 
-// ✅ Register routes
-app.use("/api/auth", authRoute);
-app.use("/api/user",userRoute)
-app.use("/api/chat",chatRoute)
-
+// In server.js, replace the production block with:
 
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../frontend/dist")));
-
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+  const frontendDistPath = path.join(__dirname, "../frontend/dist");
+  
+  // Serve static files from the React app
+  app.use(express.static(frontendDistPath));
+  
+  // Handle React routing, but exclude API routes
+  app.use((req, res, next) => {
+    if (req.path.startsWith('/api/')) {
+      return next();
+    }
+    res.sendFile(path.join(frontendDistPath, 'index.html'));
   });
 }
 
-app.get("/", (req, res) => {
-  res.send("API running successfully 🚀");
-});
 
-// ✅ Start the server
+
+
+
+
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+  connectToDB();
 });
