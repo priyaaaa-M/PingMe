@@ -2,7 +2,7 @@ import express from "express";;
 import { protectRoute } from "../middleware/auth.middleware.js";
 
 
-// Add this import at the top of user.route.js with other imports
+
 import { 
   getRecommendedUsers, 
   getFriends, 
@@ -10,7 +10,7 @@ import {
   acceptFriendRequest, 
   getFriendRequests, 
   getOutgoingFriendRequests,
-  getUserById  // Add this line
+  getUserById  
 } from "../controllers/user.controller.js";
 const router = express.Router();
 

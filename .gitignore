@@ -35,3 +35,7 @@ backend/dist/
 *.njsproj
 *.sln
 *.sw?
+
+/.env
+.env.*
+!.env.example
