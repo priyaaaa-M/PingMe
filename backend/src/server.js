@@ -30,9 +30,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/chat", chatRoutes);
 
-// In server.js, replace the production block with:
 
-// In server.js, replace the production block with:
 
 if (process.env.NODE_ENV === "production") {
   const frontendDistPath = path.join(__dirname, "../frontend/dist");
