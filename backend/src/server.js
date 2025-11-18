@@ -12,47 +12,61 @@ import { connectToDB } from "./lib/db.js";
 
 const app = express();
 const PORT = process.env.PORT;
-
 const __dirname = path.resolve();
 
+// ----------------------
+// ⭐ Content-Security-Policy FIX
+// ----------------------
+app.use((req, res, next) => {
+  res.setHeader(
+    "Content-Security-Policy",
+    "default-src 'self' 'unsafe-inline' 'unsafe-eval' https://pingme-pre6.onrender.com https://cdn.jsdelivr.net data: blob:;"
+  );
+  next();
+});
+
+// ----------------------
+// CORS
+// ----------------------
 app.use(
   cors({
-    origin: "http://localhost:5173",
-    credentials: true
+    origin: ["http://localhost:5173", "https://pingme-pre6.onrender.com"],
+    credentials: true,
   })
 );
 
-
+// ----------------------
+// Middleware
+// ----------------------
 app.use(express.json());
 app.use(cookieParser());
 
+// ----------------------
+// API Routes
+// ----------------------
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/chat", chatRoutes);
 
-
-
+// ----------------------
+// Production — Serve React
+// ----------------------
 if (process.env.NODE_ENV === "production") {
   const frontendDistPath = path.join(__dirname, "../frontend/dist");
-  
-  // Serve static files from the React app
+
+  // Serve static frontend files
   app.use(express.static(frontendDistPath));
-  
-  // Handle React routing, but exclude API routes
+
+  // Handle SPA routing (but skip API)
   app.use((req, res, next) => {
-    if (req.path.startsWith('/api/')) {
-      return next();
-    }
-    res.sendFile(path.join(frontendDistPath, 'index.html'));
+    if (req.path.startsWith("/api/")) return next();
+    res.sendFile(path.join(frontendDistPath, "index.html"));
   });
 }
 
-
-
-
-
-
-
+// ----------------------
+// Start server
+// ----------------------
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   connectToDB();
