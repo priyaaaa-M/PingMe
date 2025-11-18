@@ -20,10 +20,16 @@ const __dirname = path.resolve();
 app.use((req, res, next) => {
   res.setHeader(
     "Content-Security-Policy",
-    "default-src 'self' 'unsafe-inline' 'unsafe-eval' https://pingme-pre6.onrender.com https://cdn.jsdelivr.net data: blob:;"
+    "default-src 'self'; " + 
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://pingme-pre6.onrender.com https://cdn.jsdelivr.net; " +
+    "img-src 'self' data: https://pingme-pre6.onrender.com https://cdn.jsdelivr.net; " +
+    "connect-src 'self' https://pingme-pre6.onrender.com; " +
+    "style-src 'self' 'unsafe-inline'; " +
+    "frame-src 'self' https://pingme-pre6.onrender.com;"
   );
   next();
 });
+
 
 // ----------------------
 // CORS
