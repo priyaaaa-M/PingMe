@@ -8,13 +8,16 @@ export async function getRecommendedUsers(req, res) {
 
     const userFriends = (req.user.friends || []).map(f => f.toString());
 
-    const recommendedUsers = await User.find({
+    let recommendedUsers = await User.find({
       _id: { 
         $ne: currentUserId,
         $nin: userFriends
       },
       isOnboarded: true,
     }).select("-password -refreshToken");
+
+    //  remove null or broken users (caused by manual DB delete)
+    recommendedUsers = recommendedUsers.filter(u => u && u._id);
 
     res.status(200).json({
       success: true,
@@ -27,6 +30,7 @@ export async function getRecommendedUsers(req, res) {
     res.status(500).json({ message: "Internal Server Error" });
   }
 }
+
 
 
 // ----------------- GET FRIENDS -----------------
