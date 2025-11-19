@@ -7,7 +7,13 @@ import {
   sendFriendRequest,
 } from "../lib/api";
 import { Link } from "react-router";
-import { CheckCircleIcon, MapPinIcon, UserPlusIcon, UsersIcon, SparklesIcon } from "lucide-react";
+import {
+  CheckCircleIcon,
+  MapPinIcon,
+  UserPlusIcon,
+  UsersIcon,
+  SparklesIcon,
+} from "lucide-react";
 
 import { capitialize } from "../lib/untils";
 
@@ -31,14 +37,16 @@ const HomePage = () => {
   });
 
   // Ensure recommendedUsers is always an array
-  const recommendedUsers = Array.isArray(recommendedData?.users) 
-    ? recommendedData.users 
-    : Array.isArray(recommendedData) 
-      ? recommendedData 
-      : [];
+  const recommendedUsers = Array.isArray(recommendedData?.users)
+    ? recommendedData.users
+    : Array.isArray(recommendedData)
+    ? recommendedData
+    : [];
 
-  console.log('Recommended Data:', recommendedData);
-  console.log('Recommended Users:', recommendedUsers);
+  // ⛔ FIX: filter null users
+  const safeRecommendedUsers = recommendedUsers.filter(
+    (user) => user && user._id
+  );
 
   const { data: outgoingFriendReqs } = useQuery({
     queryKey: ["outgoingFriendReqs"],
@@ -47,33 +55,26 @@ const HomePage = () => {
 
   const { mutate: sendRequestMutation } = useMutation({
     mutationFn: async (userId) => {
-      setLoadingStates(prev => ({ ...prev, [userId]: true }));
+      setLoadingStates((prev) => ({ ...prev, [userId]: true }));
       try {
         const result = await sendFriendRequest(userId);
         return result;
       } finally {
-        setLoadingStates(prev => ({ ...prev, [userId]: false }));
+        setLoadingStates((prev) => ({ ...prev, [userId]: false }));
       }
     },
     onSuccess: (data, userId) => {
-      // Optimistically update the UI by adding the recipient ID to outgoingRequestsIds
-      setOutgoingRequestsIds(prev => new Set(prev).add(userId));
-      // Invalidate the query to refetch the latest data
+      setOutgoingRequestsIds((prev) => new Set(prev).add(userId));
       queryClient.invalidateQueries({ queryKey: ["outgoingFriendReqs"] });
     },
   });
 
   useEffect(() => {
     if (outgoingFriendReqs && outgoingFriendReqs.length > 0) {
-      const newOutgoingIds = new Set(outgoingFriendReqs.map(req => req.recipient._id));
-      setOutgoingRequestsIds(prev => {
-        // Only update if there's an actual change to prevent unnecessary re-renders
-        if (newOutgoingIds.size !== prev.size || 
-            outgoingFriendReqs.some(req => !prev.has(req.recipient._id))) {
-          return newOutgoingIds;
-        }
-        return prev;
-      });
+      const newOutgoingIds = new Set(
+        outgoingFriendReqs.map((req) => req.recipient._id)
+      );
+      setOutgoingRequestsIds(newOutgoingIds);
     } else if (outgoingFriendReqs && outgoingFriendReqs.length === 0) {
       setOutgoingRequestsIds(new Set());
     }
@@ -81,20 +82,20 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-emerald-900/20 to-slate-900 p-6">
-      {/* Floating Smile */}
       <FloatingSmile />
-      
+
       <div className="max-w-7xl mx-auto space-y-8">
-        
         {/* Friends Section */}
         <section className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold text-white">Your Friends</h2>
-              <p className="text-slate-400 mt-1">Connect and practice languages together</p>
+              <p className="text-slate-400 mt-1">
+                Connect and practice languages together
+              </p>
             </div>
-            <Link 
-              to="/notifications" 
+            <Link
+              to="/notifications"
               className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl transition-colors duration-200 font-medium"
             >
               <UsersIcon className="size-4" />
@@ -124,9 +125,12 @@ const HomePage = () => {
               <SparklesIcon className="size-6 text-emerald-400" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-white">Recommended Users</h2>
+              <h2 className="text-2xl font-bold text-white">
+                Recommended Users
+              </h2>
               <p className="text-slate-400 mt-1">
-                Discover perfect language exchange partners based on your profile
+                Discover perfect language exchange partners based on your
+                profile
               </p>
             </div>
           </div>
@@ -135,22 +139,28 @@ const HomePage = () => {
             <div className="flex justify-center py-12">
               <div className="animate-spin rounded-full size-8 border-2 border-emerald-500 border-t-transparent"></div>
             </div>
-          ) : recommendedUsers.length === 0 ? (
+          ) : safeRecommendedUsers.length === 0 ? (
             <div className="text-center py-12 bg-slate-800/30 rounded-2xl border border-slate-700">
               <UsersIcon className="size-12 text-slate-500 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-slate-300 mb-2">No recommendations available</h3>
-              <p className="text-slate-500">Check back later for new language partners!</p>
+              <h3 className="text-lg font-semibold text-slate-300 mb-2">
+                No recommendations available
+              </h3>
+              <p className="text-slate-500">
+                Check back later for new language partners!
+              </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {recommendedUsers.map((user) => {
-                const hasRequestBeenSent = outgoingRequestsIds.has(user._id);
+              {safeRecommendedUsers.map((user) => {
+                const hasRequestBeenSent =
+                  outgoingRequestsIds.has(user._id);
                 const isLoading = loadingStates[user._id] || false;
-                
+
                 return (
-                  <div key={user._id} className="group bg-slate-800/30 border border-slate-700 rounded-2xl p-6 hover:border-emerald-500/50 hover:bg-slate-800/50 transition-all duration-300 hover:scale-105 backdrop-blur-sm">
-                    
-                    {/* User Header */}
+                  <div
+                    key={user._id}
+                    className="group bg-slate-800/30 border border-slate-700 rounded-2xl p-6 hover:border-emerald-500/50 hover:bg-slate-800/50 transition-all duration-300 hover:scale-105 backdrop-blur-sm"
+                  >
                     <div className="flex items-start gap-4 mb-4">
                       <img
                         src={user.profilePic || "/default-avatar.png"}
@@ -158,7 +168,9 @@ const HomePage = () => {
                         className="size-14 rounded-full object-cover ring-2 ring-emerald-500/50 group-hover:ring-emerald-400 transition-all duration-300"
                       />
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-white text-lg truncate">{user.fullName}</h3>
+                        <h3 className="font-semibold text-white text-lg truncate">
+                          {user.fullName}
+                        </h3>
                         {user.location && (
                           <div className="flex items-center gap-1 text-slate-400 text-sm mt-1">
                             <MapPinIcon className="size-3.5" />
@@ -168,35 +180,41 @@ const HomePage = () => {
                       </div>
                     </div>
 
-                    {/* Languages and Intro Message in Compact Layout */}
                     <div className="space-y-3 mb-4">
-                      {/* Languages Row */}
                       <div className="flex items-center justify-between gap-4">
                         <div className="flex items-center gap-2 flex-1 bg-emerald-500/10 px-3 py-2 rounded-lg">
                           {getLanguageFlag(user.nativeLanguage)}
                           <div className="min-w-0 flex-1">
-                            <p className="text-xs text-emerald-400 font-medium">Native</p>
-                            <p className="text-sm font-semibold text-white truncate">{capitialize(user.nativeLanguage)}</p>
+                            <p className="text-xs text-emerald-400 font-medium">
+                              Native
+                            </p>
+                            <p className="text-sm font-semibold text-white truncate">
+                              {capitialize(user.nativeLanguage)}
+                            </p>
                           </div>
                         </div>
                         <div className="flex items-center gap-2 flex-1 bg-slate-700/50 px-3 py-2 rounded-lg">
                           {getLanguageFlag(user.learningLanguage)}
                           <div className="min-w-0 flex-1">
-                            <p className="text-xs text-slate-400 font-medium">Learning</p>
-                            <p className="text-sm font-semibold text-white truncate">{capitialize(user.learningLanguage)}</p>
+                            <p className="text-xs text-slate-400 font-medium">
+                              Learning
+                            </p>
+                            <p className="text-sm font-semibold text-white truncate">
+                              {capitialize(user.learningLanguage)}
+                            </p>
                           </div>
                         </div>
                       </div>
 
-                      {/* Intro Message (Bio) */}
                       {user.bio && (
                         <div className="bg-slate-700/30 rounded-lg p-3 border border-slate-600/50">
-                          <p className="text-slate-300 text-sm leading-relaxed">{user.bio}</p>
+                          <p className="text-slate-300 text-sm leading-relaxed">
+                            {user.bio}
+                          </p>
                         </div>
                       )}
                     </div>
 
-                    {/* Action Button */}
                     <button
                       onClick={() => sendRequestMutation(user._id)}
                       disabled={hasRequestBeenSent || isLoading}
