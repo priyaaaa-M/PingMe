@@ -56,27 +56,37 @@ const FriendsCard = ({ friend, isLoading = false }) => {
         </div>
       </div>
 
-      {/* Languages */}
+      {/* Languages - Updated to match HomePage UI */}
       <div className="space-y-3 mb-4">
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex items-center justify-between gap-4">
           {nativeLanguage && (
-            <span className="badge badge-secondary flex items-center gap-1 border border-emerald-500/30">
+            <div className="flex items-center gap-2 flex-1 bg-emerald-500/10 px-3 py-2 rounded-lg">
               {getLanguageFlag(nativeLanguage)}
-              Native: {capitialize(nativeLanguage)}
-            </span>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs text-emerald-400 font-medium">Native</p>
+                <p className="text-sm font-semibold text-white truncate">
+                  {capitialize(nativeLanguage)}
+                </p>
+              </div>
+            </div>
           )}
 
           {learningLanguage && (
-            <span className="badge badge-outline flex items-center gap-1 border border-slate-600/50">
+            <div className="flex items-center gap-2 flex-1 bg-slate-700/50 px-3 py-2 rounded-lg">
               {getLanguageFlag(learningLanguage)}
-              Learning: {capitialize(learningLanguage)}
-            </span>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs text-slate-400 font-medium">Learning</p>
+                <p className="text-sm font-semibold text-white truncate">
+                  {capitialize(learningLanguage)}
+                </p>
+              </div>
+            </div>
           )}
         </div>
 
         {bio && (
-          <div className="bg-slate-700/30 rounded-lg p-2 border border-slate-600/50">
-            <p className="text-slate-300 text-xs leading-relaxed line-clamp-3">
+          <div className="bg-slate-700/30 rounded-lg p-3 border border-slate-600/50">
+            <p className="text-slate-300 text-sm leading-relaxed">
               {bio}
             </p>
           </div>
@@ -87,7 +97,7 @@ const FriendsCard = ({ friend, isLoading = false }) => {
       <div className="flex gap-2">
         <Link
           to={`/chat/${friend._id}`}
-          className="flex-1 flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors"
+          className="flex-1 flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white py-3 px-4 rounded-xl font-medium transition-all duration-200 active:scale-95"
         >
           <MessageCircleIcon className="size-4" />
           Message
@@ -114,7 +124,7 @@ export const getLanguageFlag = (language) => {
       alt={language}
       width={18}
       height={18}
-      className="inline-block mr-1 rounded-sm"
+      className="inline-block rounded-sm"
     />
   );
 };
