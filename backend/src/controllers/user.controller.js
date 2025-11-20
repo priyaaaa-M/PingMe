@@ -18,7 +18,11 @@ export async function getRecommendedUsers(req, res) {
       isOnboarded: true,
     }).select("-password -refreshToken");
 
+<<<<<<< HEAD
     // Remove null or broken users (caused by manual DB delete)
+=======
+    //  remove null or broken users (caused by manual DB delete)
+>>>>>>> 46c7800d3da610e6199119a1f156ba4e0b21f697
     recommendedUsers = recommendedUsers.filter(u => u && u._id);
 
     res.status(200).json({
@@ -33,6 +37,11 @@ export async function getRecommendedUsers(req, res) {
   }
 }
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 46c7800d3da610e6199119a1f156ba4e0b21f697
 // ----------------- GET FRIENDS -----------------
 export async function getFriends(req, res) {
   try {
