@@ -43,7 +43,6 @@ const HomePage = () => {
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-<<<<<<< HEAD
   // Ensure recommendedUsers is always an array and filter out any null/undefined users
   const safeRecommendedUsers = useMemo(() => {
     if (!recommendedData) return [];
@@ -54,19 +53,6 @@ const HomePage = () => {
         : [];
     return users.filter(user => user?._id); // Only include users with valid _id
   }, [recommendedData]);
-=======
-  // Ensure recommendedUsers is always an array
-  const recommendedUsers = Array.isArray(recommendedData?.users)
-    ? recommendedData.users
-    : Array.isArray(recommendedData)
-    ? recommendedData
-    : [];
-
-  // ⛔ FIX: filter null users
-  const safeRecommendedUsers = recommendedUsers.filter(
-    (user) => user && user._id
-  );
->>>>>>> 46c7800d3da610e6199119a1f156ba4e0b21f697
 
   const { data: outgoingFriendReqs } = useQuery({
     queryKey: ["outgoingFriendReqs"],
@@ -155,11 +141,7 @@ const HomePage = () => {
               </h2>
               <p className="text-slate-400 mt-1">
                 Discover perfect language exchange partners based on your
-<<<<<<< HEAD
                 preferences and interests.
-=======
-                profile
->>>>>>> 46c7800d3da610e6199119a1f156ba4e0b21f697
               </p>
             </div>
           </div>
@@ -176,22 +158,14 @@ const HomePage = () => {
             <div className="text-center py-12 bg-slate-800/30 rounded-2xl border border-slate-700">
               <UsersIcon className="size-12 text-slate-500 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-slate-300 mb-2">
-<<<<<<< HEAD
                 No recommended users found
               </h3>
               <p className="text-slate-500">
                 Try again later or adjust your preferences
-=======
-                No recommendations available
-              </h3>
-              <p className="text-slate-500">
-                Check back later for new language partners!
->>>>>>> 46c7800d3da610e6199119a1f156ba4e0b21f697
               </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-<<<<<<< HEAD
               {safeRecommendedUsers
                 .filter(user => user != null) // Remove any null/undefined users
                 .map((user) => {
@@ -215,29 +189,6 @@ const HomePage = () => {
                           {user?.fullName || 'Anonymous User'}
                         </h3>
                         {user?.location && (
-=======
-              {safeRecommendedUsers.map((user) => {
-                const hasRequestBeenSent =
-                  outgoingRequestsIds.has(user._id);
-                const isLoading = loadingStates[user._id] || false;
-
-                return (
-                  <div
-                    key={user._id}
-                    className="group bg-slate-800/30 border border-slate-700 rounded-2xl p-6 hover:border-emerald-500/50 hover:bg-slate-800/50 transition-all duration-300 hover:scale-105 backdrop-blur-sm"
-                  >
-                    <div className="flex items-start gap-4 mb-4">
-                      <img
-                        src={user.profilePic || "/default-avatar.png"}
-                        alt={user.fullName}
-                        className="size-14 rounded-full object-cover ring-2 ring-emerald-500/50 group-hover:ring-emerald-400 transition-all duration-300"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-white text-lg truncate">
-                          {user.fullName}
-                        </h3>
-                        {user.location && (
->>>>>>> 46c7800d3da610e6199119a1f156ba4e0b21f697
                           <div className="flex items-center gap-1 text-slate-400 text-sm mt-1">
                             <MapPinIcon className="size-3.5" />
                             <span className="truncate">{user.location}</span>
@@ -246,11 +197,7 @@ const HomePage = () => {
                       </div>
                     </div>
 
-<<<<<<< HEAD
                       <div className="space-y-3 mb-4">
-=======
-                    <div className="space-y-3 mb-4">
->>>>>>> 46c7800d3da610e6199119a1f156ba4e0b21f697
                       <div className="flex items-center justify-between gap-4">
                         <div className="flex items-center gap-2 flex-1 bg-emerald-500/10 px-3 py-2 rounded-lg">
                           {user?.nativeLanguage && getLanguageFlag(user.nativeLanguage)}
