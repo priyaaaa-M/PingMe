@@ -37,12 +37,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/chat", chatRoutes);
 
-<<<<<<< HEAD
 // Serve frontend in production
-=======
-
-
->>>>>>> 46c7800d3da610e6199119a1f156ba4e0b21f697
 if (process.env.NODE_ENV === "production") {
   const frontendDistPath = path.join(__dirname, "../frontend/dist");
   app.use(express.static(frontendDistPath));
@@ -57,7 +52,6 @@ if (process.env.NODE_ENV === "production") {
 // Start server and connect to DB
 app.listen(PORT, async () => {
   console.log(`Server is running on port ${PORT}`);
-<<<<<<< HEAD
   
   try {
     await connectToDB();
@@ -65,7 +59,4 @@ app.listen(PORT, async () => {
     console.error("Failed to connect to MongoDB:", err);
     process.exit(1);
   }
-=======
-  connectToDB();
->>>>>>> 46c7800d3da610e6199119a1f156ba4e0b21f697
 });
