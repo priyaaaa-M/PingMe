@@ -2,7 +2,7 @@ import { generateStreamToken } from "../lib/stream.js";
 
 export async function getStreamToken(req, res) {
   try {
-    // FIX: Use _id instead of id
+    
     if (!req.user || !req.user._id) {
       return res.status(401).json({ message: "Unauthorized: No user found" });
     }

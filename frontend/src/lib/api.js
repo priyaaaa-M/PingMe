@@ -35,8 +35,18 @@ export async function getUserFriends() {
 }
 
 export async function getRecommendedUsers() {
-  const response = await axiosInstance.get("/user");
-  return response.data;
+  try {
+    const response = await axiosInstance.get("/user");
+    // Ensure we always return an array, even if the response structure is unexpected
+    return Array.isArray(response.data?.users) 
+      ? response.data.users 
+      : Array.isArray(response.data) 
+        ? response.data 
+        : [];
+  } catch (error) {
+    console.error("Error fetching recommended users:", error);
+    return []; // Return empty array on error
+  }
 }
 
 export async function getOutgoingFriendReqs() {
@@ -55,7 +65,7 @@ export async function getFriendRequests() {
 }
 
 export async function acceptFriendRequest(requestId) {
-  const response = await axiosInstance.get(`/user/friend-requests/${requestId}/accept`);
+  const response = await axiosInstance.put('/user/friend-requests/accept', { requestId });
   return response.data;
 }
 
