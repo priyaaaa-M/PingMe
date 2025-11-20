@@ -18,9 +18,7 @@ const FriendsCard = ({ friend, isLoading = false }) => {
     );
   }
 
-  if (!friend) {
-    return null; // or return a placeholder/error card
-  }
+  if (!friend) return null;
 
   const {
     profilePic = "/default-avatar.png",
@@ -33,7 +31,7 @@ const FriendsCard = ({ friend, isLoading = false }) => {
 
   return (
     <div className="group bg-slate-800/30 border border-slate-700 rounded-2xl p-6 hover:border-emerald-500/50 hover:bg-slate-800/50 transition-all duration-300 hover:scale-105 backdrop-blur-sm w-full">
-      {/* User Header */}
+      {/* Header */}
       <div className="flex items-start gap-4 mb-4">
         <img
           src={profilePic}
@@ -48,6 +46,7 @@ const FriendsCard = ({ friend, isLoading = false }) => {
           <h3 className="font-semibold text-white text-lg truncate">
             {fullName}
           </h3>
+
           {location && (
             <div className="flex items-center gap-1 text-slate-400 text-sm mt-1">
               <MapPinIcon className="size-3.5" />
@@ -57,17 +56,18 @@ const FriendsCard = ({ friend, isLoading = false }) => {
         </div>
       </div>
 
-      {/* Compact Languages Section */}
+      {/* Languages */}
       <div className="space-y-3 mb-4">
         <div className="flex flex-wrap gap-1.5">
           {nativeLanguage && (
-            <span className="badge badge-secondary">
+            <span className="badge badge-secondary flex items-center gap-1">
               {getLanguageFlag(nativeLanguage)}
               Native: {capitialize(nativeLanguage)}
             </span>
           )}
+
           {learningLanguage && (
-            <span className="badge badge-outline">
+            <span className="badge badge-outline flex items-center gap-1">
               {getLanguageFlag(learningLanguage)}
               Learning: {capitialize(learningLanguage)}
             </span>
@@ -83,6 +83,7 @@ const FriendsCard = ({ friend, isLoading = false }) => {
         )}
       </div>
 
+      {/* Message Button */}
       <div className="flex gap-2">
         <Link
           to={`/chat/${friend._id}`}
@@ -96,22 +97,26 @@ const FriendsCard = ({ friend, isLoading = false }) => {
   );
 };
 
-// Get the country flag emoji for a given language name
+/* ---------------------------------------------------
+   FIXED FLAG FUNCTION — works on Render, Web, Mobile
+-----------------------------------------------------*/
 export const getLanguageFlag = (language) => {
-  if (!language) return "🌐";
-  // Convert to lowercase and remove any whitespace for consistent matching
-  const normalizedLang = language.toString().toLowerCase().trim();
-  const flagCode = LANGUAGE_TO_FLAG[normalizedLang];
-  
-  // If we have a flag code, return the corresponding flag emoji
-  if (flagCode) {
-    return flagCode.toUpperCase().replace(/./g, char => 
-      String.fromCodePoint(char.charCodeAt(0) + 127397)
-    );
-  }
-  
-  // Fallback to globe emoji if no flag found
-  return "🌐"
+  if (!language) return null;
+
+  const lang = language.toLowerCase().trim();
+  const code = LANGUAGE_TO_FLAG[lang];
+
+  if (!code) return null;
+
+  return (
+    <img
+      src={`https://flagcdn.com/${code}.svg`}
+      alt={language}
+      width={18}
+      height={18}
+      className="inline-block mr-1 rounded-sm"
+    />
+  );
 };
 
 export default FriendsCard;
