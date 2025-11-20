@@ -60,14 +60,14 @@ const FriendsCard = ({ friend, isLoading = false }) => {
       <div className="space-y-3 mb-4">
         <div className="flex flex-wrap gap-1.5">
           {nativeLanguage && (
-            <span className="badge badge-secondary flex items-center gap-1">
+            <span className="badge badge-secondary flex items-center gap-1 border border-emerald-500/30">
               {getLanguageFlag(nativeLanguage)}
               Native: {capitialize(nativeLanguage)}
             </span>
           )}
 
           {learningLanguage && (
-            <span className="badge badge-outline flex items-center gap-1">
+            <span className="badge badge-outline flex items-center gap-1 border border-slate-600/50">
               {getLanguageFlag(learningLanguage)}
               Learning: {capitialize(learningLanguage)}
             </span>
