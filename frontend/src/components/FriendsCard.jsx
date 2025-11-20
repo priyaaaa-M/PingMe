@@ -110,11 +110,22 @@ const FriendsCard = ({ friend, isLoading = false }) => {
   );
 };
 
-// Update getLanguageFlag with null check
+// Get the country flag emoji for a given language name
 export const getLanguageFlag = (language) => {
   if (!language) return "🌐";
-  const flag = LANGUAGE_TO_FLAG[language.toLowerCase()];
-  return flag || "🌐";
+  // Convert to lowercase and remove any whitespace for consistent matching
+  const normalizedLang = language.toString().toLowerCase().trim();
+  const flagCode = LANGUAGE_TO_FLAG[normalizedLang];
+  
+  // If we have a flag code, return the corresponding flag emoji
+  if (flagCode) {
+    return flagCode.toUpperCase().replace(/./g, char => 
+      String.fromCodePoint(char.charCodeAt(0) + 127397)
+    );
+  }
+  
+  // Fallback to globe emoji if no flag found
+  return "🌐"
 };
 
 export default FriendsCard;
