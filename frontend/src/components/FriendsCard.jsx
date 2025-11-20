@@ -59,32 +59,18 @@ const FriendsCard = ({ friend, isLoading = false }) => {
 
       {/* Compact Languages Section */}
       <div className="space-y-3 mb-4">
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap gap-1.5">
           {nativeLanguage && (
-            <div className="flex items-center gap-1.5 flex-1 bg-emerald-500/10 px-2 py-1.5 rounded-lg min-w-0">
+            <span className="badge badge-secondary">
               {getLanguageFlag(nativeLanguage)}
-              <div className="min-w-0 flex-1">
-                <p className="text-[10px] text-emerald-400 font-medium truncate">
-                  Native
-                </p>
-                <p className="text-xs font-semibold text-white truncate">
-                  {capitialize(nativeLanguage)}
-                </p>
-              </div>
-            </div>
+              Native: {capitialize(nativeLanguage)}
+            </span>
           )}
           {learningLanguage && (
-            <div className="flex items-center gap-1.5 flex-1 bg-slate-700/50 px-2 py-1.5 rounded-lg min-w-0">
+            <span className="badge badge-outline">
               {getLanguageFlag(learningLanguage)}
-              <div className="min-w-0 flex-1">
-                <p className="text-[10px] text-slate-400 font-medium truncate">
-                  Learning
-                </p>
-                <p className="text-xs font-semibold text-white truncate">
-                  {capitialize(learningLanguage)}
-                </p>
-              </div>
-            </div>
+              Learning: {capitialize(learningLanguage)}
+            </span>
           )}
         </div>
 
@@ -110,11 +96,22 @@ const FriendsCard = ({ friend, isLoading = false }) => {
   );
 };
 
-// Update getLanguageFlag with null check
+// Get the country flag emoji for a given language name
 export const getLanguageFlag = (language) => {
   if (!language) return "🌐";
-  const flag = LANGUAGE_TO_FLAG[language.toLowerCase()];
-  return flag || "🌐";
+  // Convert to lowercase and remove any whitespace for consistent matching
+  const normalizedLang = language.toString().toLowerCase().trim();
+  const flagCode = LANGUAGE_TO_FLAG[normalizedLang];
+  
+  // If we have a flag code, return the corresponding flag emoji
+  if (flagCode) {
+    return flagCode.toUpperCase().replace(/./g, char => 
+      String.fromCodePoint(char.charCodeAt(0) + 127397)
+    );
+  }
+  
+  // Fallback to globe emoji if no flag found
+  return "🌐"
 };
 
 export default FriendsCard;
