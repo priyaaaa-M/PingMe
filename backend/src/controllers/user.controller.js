@@ -33,10 +33,6 @@ export async function getRecommendedUsers(req, res) {
   }
 }
 
-<<<<<<< HEAD
-          // Remove null or broken users (caused by manual DB delete)
-=======
->>>>>>> 62a86bc6fb2019fe93f3354046e0dc4a62a78a0a
 
 
 // ----------------- GET FRIENDS -----------------
